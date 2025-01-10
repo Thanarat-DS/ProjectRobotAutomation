@@ -3,8 +3,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.remote.webelement import WebElement
 from selenium_stealth import stealth
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -79,6 +77,7 @@ except Exception as e:
 
 ## คลิกทุกที่นั่ง
 try:
+    time.sleep(0.3)
     wait_element = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "text[style*='cursor: pointer']")))
     text_elements = driver.find_elements(By.CSS_SELECTOR, "text[style*='cursor: pointer']")
     for element in text_elements:
