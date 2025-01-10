@@ -14,7 +14,8 @@ import random
 # "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\selenium_profile"
 
 price = '฿2,500'
-web_target = "https://www.theconcert.com/concert/3626"
+zone_target = 'A1'
+web_target = "https://www.theconcert.com/concert/3727"
 
 chrome_options = Options()
 chrome_options.add_argument("--start-maximized")
@@ -38,75 +39,54 @@ stealth(driver,
       fix_hairline=True,
   )
 
-driver.get("https://www.theconcert.com/")
-time.sleep(1)
-window_size = driver.get_window_size()
+## เข้าเว็บ Target & เข้าเลือกที่นั่ง
+driver.get(web_target)
+driver.execute_script("window.scrollBy(0, 80);")
 
-#สุ่มค่าเพื่อไม่ให้คลิกซ้ำที่เดิม
-middle_y_factor = random.uniform(1.5, 3)
-near_right_x_offset = random.randint(30, 80)
-
-middle_y = window_size['height'] // middle_y_factor
-near_right_x = window_size['width'] - near_right_x_offset
-
-action = ActionChains(driver)
-action.move_by_offset(near_right_x, middle_y).click().perform()
-time.sleep(0.5)
+wait = WebDriverWait(driver, 10)
 
 try:
-    wait = WebDriverWait(driver, 10)
-
-    # element = WebDriverWait(driver, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'เข้าสู่ระบบ')]")) or
-    #     EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'login-btn')]")) or 
-    #     EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'login')]"))
-    # )
-    
-    # element.click()
-    driver.get(web_target)
-
-    driver.execute_script("window.scrollBy(0, 80);")
-
     ticket_button = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="_main-body"]/div/div[1]/div[1]/div[2]/div[2]/div[2]/div/div[2]/div[2]/button')))
     ticket_button.click()
+except Exception as e:
+    print(f"คลิกปุ่มเข้าซื้อไม่ได้: {e}")
 
+## เลือกโซน
+try:
     price_button = wait.until(EC.element_to_be_clickable((By.XPATH, f"//a[@class='btn'][contains(text(), '{price}')]")))
     price_button.click()
+    print(f"clicked price: {price}")
+except Exception as e:
+    print(f"คลิกปุ่มราคาไม่ได้: {e}")
 
+## เลือกราคา
+try:
+    time.sleep(0.2)
     zone_items = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "li.zone-item")))
     for zone_item in zone_items:
         try:
-            # Check if sold out text exists
-            sold_out = zone_item.find_elements(By.CLASS_NAME, "sold-out-text")
-            if not sold_out:  # If no sold out text found
+            zone_name = zone_item.find_element(By.CSS_SELECTOR, ".badge.badge-zone").text
+            if zone_name == zone_target:
                 zone_item.click()
+                print(f"clicked zone: {zone_target}")
                 break
+            else:
+                print(zone_name, " != ", zone_target)
         except Exception as e:
-            continue
-
-    # หาทุก tspan tag ที่มีในหน้าเว็บ
-    try:
-        tspan_elements = wait.until(EC.presence_of_all_elements_located((By.TAG_NAME, "tspan")))
-        if tspan_elements:
-            # คลิกที่ tspan tag แรกที่เจอ
-            tspan_elements[0].click()
-        else:
-            print("ไม่พบ tspan tag ในหน้าเว็บ")
-    except Exception as e:
-        print(f"เกิดข้อผิดพลาดเลือกที่นั่ง: {e}")
-
-    time.sleep(1.5)
-    target_x = int(window_size['width'] * 0.15)  # 15% ของความกว้างหน้าจอ
-    target_y = int(window_size['height'] * 0.95)  # 95% ของความสูงหน้าจอ
-    
-    actions = ActionChains(driver)
-    actions.move_by_offset(target_x, target_y).click().perform()
-
-    print("คลิกปุ่มซื้อบัตรสำเร็จ")
-
+            print(f"คลิกปุ่มโซนไม่ได้: {e}, zone_name={zone_name}")
 except Exception as e:
-    print(f"เกิดข้อผิดพลาด: {e}")
+    print(f"Error: {e}")
+
+## คลิกทุกที่นั่ง
+try:
+    wait_element = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "text[style*='cursor: pointer']")))
+    text_elements = driver.find_elements(By.CSS_SELECTOR, "text[style*='cursor: pointer']")
+    for element in text_elements:
+        element.click()
+
+        #หน่วงเวลา
+        time.sleep(random.uniform(0.11, 0.15))
+except Exception as e:
+    print(f"error or may be it reach limit message:{e}")
 finally:
-    for i in range(200):
-        time.sleep(1)
-    driver.quit()
+    print("success")
