@@ -1,7 +1,7 @@
-The Crossover Concert "Yesterday Today Tomorrow"
-price = '฿2,500'
-zone_target = 'A1'
-web_target = "https://www.theconcert.com/concert/3727"
+ONG SEONG-WU FANMEETING <COMEONG> IN BANGKOK
+price = '฿6,940'
+zone_target = 'A2'
+web_target = "https://www.theconcert.com/concert/3775"
 
 NO ONE ELSE
 price = '฿3,620'
