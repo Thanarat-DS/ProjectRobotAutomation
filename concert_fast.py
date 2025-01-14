@@ -83,7 +83,7 @@ def click_all_seats(driver, wait):
         text_elements = driver.find_elements(By.CSS_SELECTOR, "text[style*='cursor: pointer']")
         for element in text_elements:
             element.click()
-            time.sleep(random.uniform(0.11, 0.15))
+            time.sleep(random.uniform(0.3, 0.4))
     except Exception as e:
         print(f"Error or limit reached: {e}")
     finally:
@@ -93,20 +93,22 @@ if __name__ == "__main__":
     driver = setup_driver()
     wait = WebDriverWait(driver, 10)
 
-    # open_target_website(driver, web_target)
-    # enter_ticket_page(driver, wait)
+    open_target_website(driver, web_target)
+    enter_ticket_page(driver, wait)
     # select_price(driver, wait, price)
-    # select_zone(driver, wait, zone_target)
-    # click_all_seats(driver, wait)
+    select_zone(driver, wait, zone_target)
+    click_all_seats(driver, wait)
 
-    for _ in range(1000):
-        text = int(input("Select Task: \n1: open web\n2: enter ticket page\n3: select price\n4: select zone\n"))
-        match text:
-            case 1:
-                open_target_website(driver, web_target)
-            case 2:
-                enter_ticket_page(driver, wait)
-            case 3:
-                select_price(driver, wait, price)
-            case 4:
-                select_zone(driver, wait, zone_target)
+    # for _ in range(1000):
+    #     text = int(input("Select Task: \n1: open web\n2: enter ticket page\n3: select price\n4: select zone\n5: click all seats\n"))
+    #     match text:
+    #         case 1:
+    #             open_target_website(driver, web_target)
+    #         case 2:
+    #             enter_ticket_page(driver, wait)
+    #         case 3:
+    #             select_price(driver, wait, price)
+    #         case 4:
+    #             select_zone(driver, wait, zone_target)
+    #         case 5:
+    #             click_all_seats(driver, wait)
