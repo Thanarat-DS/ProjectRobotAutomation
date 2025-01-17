@@ -38,7 +38,6 @@ stealth(driver,
 
 def open_target_website(url):
     driver.get(url)
-    driver.execute_script("window.scrollBy(0, 80);")
 
 def enter_ticket_page(wait):
     try:
@@ -100,7 +99,7 @@ if __name__ == "__main__":
 
     open_target_website(web_target)
     enter_ticket_page(wait)
-    select_price(wait, price)
+    # select_price(wait, price)
     select_zone(wait, zone_target)
     click_all_seats(driver, wait)
 
